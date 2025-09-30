@@ -1,0 +1,23 @@
+# Core document processing libraries
+python-docx>=0.8.11
+PyPDF2>=3.0.1
+beautifulsoup4>=4.11.1
+lxml>=4.9.1
+openpyxl>=3.0.10
+pandas>=1.5.0
+
+# AI integration (optional)
+openai>=1.0.0
+anthropic>=0.7.0
+google-generativeai>=0.3.0
+replicate>=0.15.0
+
+# File handling and utilities
+chardet>=5.1.0
+
+# Report generation
+markdown>=3.4.4
+jinja2>=3.1.2
+
+# Configuration and logging
+pyyaml>=6.0
