@@ -36,7 +36,7 @@ A comprehensive command-line document analysis tool for macOS that provides **pr
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/giarcheuli/docparser.git
 cd docparser
 
 # Install dependencies
@@ -107,7 +107,7 @@ Reports/
 ### Quick Setup
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone https://github.com/giarcheuli/docparser.git
 cd docparser
 
 # Install dependencies
@@ -338,7 +338,7 @@ tail -f docparser.log
 
 ```bash
 # Clone repository
-git clone <repository-url>
+git clone https://github.com/giarcheuli/docparser.git
 cd docparser
 
 # Install dependencies
