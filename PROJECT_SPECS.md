@@ -235,10 +235,36 @@ docparser/
 6. **User-Friendly CLI**: Intuitive command-line interface with helpful options
 7. **Session Management**: Organized output with historical preservation
 
+## 🗺️ Future Development Roadmap
+
+### **Version 2.1 Planned Features**
+
+#### **1. Configurable AI Integration**
+- **Multi-Provider Support**: Replicate, OpenAI, Anthropic, Gemini
+- **YAML Configuration**: Flexible provider selection and parameters
+- **Fallback Logic**: Automatic provider switching on failure
+- **Backward Compatibility**: Replicate remains default
+
+#### **2. Configurable Project Detection**
+- **Variable Directory Levels**: User-defined project detection depth
+- **Complex Structures**: Support for `/Market/Industry/Company/Project/` patterns
+- **CLI Overrides**: Command-line project level specification
+- **Auto-Detection**: Smart suggestions for optimal detection level
+
+### **Long-term Vision**
+- JSON output formats for programmatic integration
+- Batch processing for multiple directory analysis
+- Docker containerization for deployment flexibility
+- Custom analysis templates and workflow support
+
+**Detailed specifications available in [ROADMAP.md](ROADMAP.md)**
+
 The tool is **production-ready** for deployment to GitHub and immediate use in real-world document analysis scenarios.
 
 ---
 
 **Generated**: September 30, 2025  
+**Updated**: October 1, 2025  
 **Version**: 2.0.0  
-**Status**: Production Ready ✅
+**Status**: Production Ready ✅  
+**Next Release**: v2.1.0 (Planned)
