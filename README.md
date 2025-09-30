@@ -398,7 +398,9 @@ For issues, questions, or contributions:
 
 ## 🗺️ Roadmap
 
-### Planned Features
+### Planned Features (v2.1)
+- [ ] **Configurable AI Integration**: Multi-provider support (Replicate, OpenAI, Anthropic, Gemini)
+- [ ] **Configurable Project Detection**: User-defined directory level for project identification
 - [ ] **JSON Output Format**: Alternative to markdown reports
 - [ ] **Batch Processing**: Multiple directory analysis
 - [ ] **Custom Templates**: User-defined report formats
@@ -407,10 +409,12 @@ For issues, questions, or contributions:
 - [ ] **Cloud Storage**: Direct integration with cloud services
 
 ### AI Enhancements
-- [ ] **Multi-Model Support**: OpenAI, Anthropic integration
+- [ ] **Multi-Provider Configuration**: Flexible AI provider selection with fallback support
 - [ ] **Custom Prompts**: User-defined analysis templates
 - [ ] **Workflow Analysis**: Document process understanding
 - [ ] **Sentiment Analysis**: Document tone and sentiment
+
+**See [ROADMAP.md](ROADMAP.md) for detailed feature specifications and implementation plans.**
 
 ---
 
