@@ -1,4 +1,4 @@
-# DocParser v2.1 - Feature Roadmap
+# DocGuru v2.1 - Feature Roadmap
 
 ## Planned Features for Next Release
 
@@ -101,7 +101,7 @@ Allow users to specify which directory level should be considered as "projects" 
 
 **Configuration Options**:
 - **Config File**: Add to main configuration
-- **Environment Variable**: `DOCPARSER_PROJECT_LEVEL`
+- **Environment Variable**: `DOCGURU_PROJECT_LEVEL`
 - **CLI Parameter**: `--project-level 3`
 - **Auto-Detection**: Analyze directory structure and suggest optimal level
 

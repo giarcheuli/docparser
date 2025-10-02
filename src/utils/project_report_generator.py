@@ -188,23 +188,63 @@ This comprehensive analysis covers **{len(projects)} projects** containing **{to
         content += "\n---\n\n"
         
         # Add detailed project sections
-        for project_name, project_files in projects.items():
-            project_results = [r for r in results if r.file_info.project_name == project_name]
-            stats = project_stats.get(project_name, {})
+        if projects:
+            # Process organized projects
+            for project_name, project_files in projects.items():
+                project_results = [r for r in results if r.file_info.project_name == project_name]
+                stats = project_stats.get(project_name, {})
+                
+                content += f"## Project: {project_name}\n\n"
+                content += f"**Files:** {stats.get('file_count', 0)}  \n"
+                content += f"**Sections:** {', '.join(stats.get('subfolders', ['root']))}\n"
+                content += f"**File Types:** {', '.join(stats.get('extensions', {}).keys())}\n\n"
+                
+                # Add AI project analysis
+                content += self._get_project_ai_analysis(project_name, project_files, stats)
+                
+                # Add file details
+                content += f"### Documents in {project_name}\n\n"
+                
+                for result in project_results:
+                    if result.error:
+                        continue
+                        
+                    content += f"#### {result.file_info.name}\n"
+                    content += f"**Location:** `{result.file_info.relative_path}`  \n"
+                    content += f"**Type:** {result.file_info.extension.upper()}  \n"
+                    content += f"**Size:** {self._format_size(result.file_info.size)}  \n"
+                    content += f"**Words:** {result.word_count:,}\n\n"
+                    
+                    if result.summary:
+                        content += f"**Summary:** {result.summary}\n\n"
+                    
+                    if result.ai_insights:
+                        content += f"**Analysis:** {result.ai_insights}\n\n"
+                    
+                    content += "---\n\n"
+        else:
+            # Handle case where no projects were detected - show all files
+            content += f"## Documents Analysis\n\n"
+            content += f"**Total Files:** {total_files}  \n"
+            content += f"**Successful Analyses:** {successful_analyses}  \n"
+            content += f"**Total Words:** {total_words:,}\n\n"
             
-            content += f"## Project: {project_name}\n\n"
-            content += f"**Files:** {stats.get('file_count', 0)}  \n"
-            content += f"**Sections:** {', '.join(stats.get('subfolders', ['root']))}\n"
-            content += f"**File Types:** {', '.join(stats.get('extensions', {}).keys())}\n\n"
+            # Get file type distribution
+            file_types = {}
+            for result in results:
+                ext = result.file_info.extension.upper()
+                file_types[ext] = file_types.get(ext, 0) + 1
             
-            # Add AI project analysis
-            content += self._get_project_ai_analysis(project_name, project_files, stats)
+            content += f"**File Types:** {', '.join(f'{ext}({count})' for ext, count in file_types.items())}\n\n"
             
-            # Add file details
-            content += f"### Documents in {project_name}\n\n"
+            # Add individual file details with AI insights
+            content += f"### Document Details\n\n"
             
-            for result in project_results:
+            for result in results:
                 if result.error:
+                    content += f"#### {result.file_info.name} (Error)\n"
+                    content += f"**Error:** {result.error}\n\n"
+                    content += "---\n\n"
                     continue
                     
                 content += f"#### {result.file_info.name}\n"
@@ -217,7 +257,7 @@ This comprehensive analysis covers **{len(projects)} projects** containing **{to
                     content += f"**Summary:** {result.summary}\n\n"
                 
                 if result.ai_insights:
-                    content += f"**Analysis:** {result.ai_insights}\n\n"
+                    content += f"**AI Analysis:** {result.ai_insights}\n\n"
                 
                 content += "---\n\n"
         

@@ -1,0 +1,57 @@
+# AI Provider Configuration for DocParser v2.1
+# Copy this file to ai_config.yaml and configure your providers
+
+ai_providers:
+  # Default provider to use
+  default: "replicate"
+  
+  # Replicate (Default - most reliable)
+  replicate:
+    enabled: true
+    api_token: "${REPLICATE_API_TOKEN}"
+    model: "meta/llama-2-7b-chat"
+    max_tokens: 1000
+    temperature: 0.3
+    top_p: 0.9
+    repetition_penalty: 1.1
+  
+  # OpenAI GPT (Requires API key)
+  openai:
+    enabled: false
+    api_key: "${OPENAI_API_KEY}"
+    model: "gpt-3.5-turbo"
+    max_tokens: 1000
+    temperature: 0.3
+  
+  # Anthropic Claude (Requires API key)
+  anthropic:
+    enabled: false
+    api_key: "${ANTHROPIC_API_KEY}"
+    model: "claude-3-haiku-20240307"
+    max_tokens: 1000
+    temperature: 0.3
+  
+  # Google Gemini (Requires API key)
+  gemini:
+    enabled: false
+    api_key: "${GEMINI_API_KEY}"
+    model: "gemini-pro"
+    max_tokens: 1000
+    temperature: 0.3
+
+# Fallback configuration
+fallback:
+  enabled: true
+  order: ["replicate", "openai", "gemini", "anthropic"]
+
+# Usage Notes:
+# 1. Set enabled: true for providers you want to use
+# 2. Configure API credentials as environment variables:
+#    - export REPLICATE_API_TOKEN="your_token_here"
+#    - export OPENAI_API_KEY="your_key_here"
+#    - export ANTHROPIC_API_KEY="your_key_here"
+#    - export GEMINI_API_KEY="your_key_here"
+# 3. Use ai_config_manager.py to test and configure providers:
+#    python ai_config_manager.py --list
+#    python ai_config_manager.py --test-all
+#    python ai_config_manager.py --configure replicate

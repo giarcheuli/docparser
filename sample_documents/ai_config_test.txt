@@ -1,0 +1,57 @@
+DocParser AI Configuration Test Document
+
+This is a plain text document for testing the new configurable AI integration system in DocParser v2.1.
+
+Key Testing Areas:
+==================
+
+1. Multi-Provider Support
+   - OpenAI GPT models
+   - Anthropic Claude models  
+   - Google Gemini models
+   - Replicate hosted models
+
+2. Configuration Management
+   - YAML-based configuration files
+   - Environment variable support
+   - Provider-specific settings
+   - Model parameter customization
+
+3. Fallback Mechanisms
+   - Provider failure handling
+   - Graceful degradation to basic analysis
+   - User-friendly error messages
+
+4. Security Features
+   - Secure credential storage
+   - Environment variable resolution
+   - No hardcoded API keys
+
+Testing Scenarios:
+==================
+
+- Test with no AI providers configured
+- Test with invalid credentials
+- Test with multiple providers enabled
+- Test fallback order functionality
+- Test configuration validation
+
+Performance Considerations:
+===========================
+
+The new system should maintain the same performance characteristics as the original while adding flexibility. The fallback system ensures that DocParser remains functional even without AI providers configured.
+
+Content Analysis Expected:
+==========================
+
+When AI is available, this document should be analyzed for:
+- Document structure and organization
+- Technical content identification
+- Testing methodology description
+- Configuration management patterns
+
+When AI is unavailable, basic analysis should identify:
+- File type (TXT)
+- Content length statistics
+- Presence of structured sections
+- General document characteristics

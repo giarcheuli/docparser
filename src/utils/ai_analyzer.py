@@ -1,58 +1,128 @@
 """
-AI-powered content analysis using OpenAI, Anthropic, or Replicate APIs
+AI-powered content analysis using multiple configurable AI providers
 """
+
+# Ensure environment variables are loaded first
+try:
+    from dotenv import load_dotenv
+    load_dotenv(override=True)
+except ImportError:
+    pass
 
 import logging
 import os
-from typing import Optional
+from typing import Optional, Dict, Any, List
+from .ai_config import AIConfig
 
 class AIAnalyzer:
-    """AI-powered content analyzer for summarization and insights"""
+    """AI-powered content analyzer with configurable multi-provider support"""
     
-    def __init__(self):
+    def __init__(self, config_path: Optional[str] = None):
         self.logger = logging.getLogger(__name__)
-        self.openai_client = None
-        self.anthropic_client = None
-        self.replicate_client = None
+        self.config = AIConfig(config_path)
+        self.clients = {}
         
         # Initialize available AI clients
         self._init_ai_clients()
     
     def _init_ai_clients(self):
-        """Initialize AI clients if API keys are available"""
+        """Initialize AI clients for enabled providers with credentials"""
+        available_providers = self.config.get_available_providers()
         
-        # Try OpenAI
+        for provider in available_providers:
+            try:
+                if provider == "openai":
+                    self._init_openai()
+                elif provider == "anthropic":
+                    self._init_anthropic()
+                elif provider == "replicate":
+                    self._init_replicate()
+                elif provider == "gemini":
+                    self._init_gemini()
+            except Exception as e:
+                self.logger.warning(f"Failed to initialize {provider}: {e}")
+    
+    def _init_openai(self):
+        """Initialize OpenAI client"""
         try:
             import openai
-            if os.getenv('OPENAI_API_KEY'):
-                self.openai_client = openai.OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+            api_key = self.config.get_api_credential("openai")
+            if api_key:
+                self.clients["openai"] = openai.OpenAI(api_key=api_key)
                 self.logger.info("OpenAI client initialized")
         except ImportError:
             self.logger.warning("OpenAI package not available")
-        except Exception as e:
-            self.logger.warning(f"Failed to initialize OpenAI client: {e}")
-        
-        # Try Anthropic
+    
+    def _init_anthropic(self):
+        """Initialize Anthropic client"""
         try:
             import anthropic
-            if os.getenv('ANTHROPIC_API_KEY'):
-                self.anthropic_client = anthropic.Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
+            api_key = self.config.get_api_credential("anthropic")
+            if api_key:
+                self.clients["anthropic"] = anthropic.Anthropic(api_key=api_key)
                 self.logger.info("Anthropic client initialized")
         except ImportError:
             self.logger.warning("Anthropic package not available")
-        except Exception as e:
-            self.logger.warning(f"Failed to initialize Anthropic client: {e}")
-        
-        # Try Replicate
+    
+    def _init_replicate(self):
+        """Initialize Replicate client"""
         try:
             import replicate
-            if os.getenv('REPLICATE_API_TOKEN'):
-                self.replicate_client = replicate
+            api_token = self.config.get_api_credential("replicate")
+            if api_token:
+                os.environ["REPLICATE_API_TOKEN"] = api_token
+                self.clients["replicate"] = replicate
                 self.logger.info("Replicate client initialized")
         except ImportError:
             self.logger.warning("Replicate package not available")
-        except Exception as e:
-            self.logger.warning(f"Failed to initialize Replicate client: {e}")
+    
+    def _init_gemini(self):
+        """Initialize Google Gemini client"""
+        try:
+            import google.generativeai as genai
+            api_key = self.config.get_api_credential("gemini")
+            if api_key:
+                genai.configure(api_key=api_key)
+                self.clients["gemini"] = genai
+                self.logger.info("Gemini client initialized")
+        except ImportError:
+            self.logger.warning("Google GenerativeAI package not available")
+    
+    def get_available_providers(self) -> List[str]:
+        """Get list of available and initialized providers"""
+        return list(self.clients.keys())
+    
+    def _try_providers_with_fallback(self, method_name: str, *args, **kwargs) -> Optional[str]:
+        """Try providers in fallback order until one succeeds"""
+        
+        # Get preferred provider order
+        default_provider = self.config.get_default_provider()
+        fallback_order = self.config.get_fallback_order()
+        
+        # Ensure default provider is first
+        provider_order = [default_provider] if default_provider in self.clients else []
+        for provider in fallback_order:
+            if provider in self.clients and provider not in provider_order:
+                provider_order.append(provider)
+        
+        if not provider_order:
+            self.logger.error("No AI providers available")
+            return None
+        
+        # Try each provider in order
+        for provider in provider_order:
+            try:
+                method = getattr(self, f"_{provider}_{method_name}")
+                result = method(*args, **kwargs)
+                if result:
+                    self.logger.info(f"Successfully used {provider} for {method_name}")
+                    return result
+            except Exception as e:
+                self.logger.warning(f"{provider} failed for {method_name}: {e}")
+                continue
+        
+        self.logger.error(f"All providers failed for {method_name}")
+        return None
     
     def summarize_content(self, content: str, max_length: int = 200, project_context: str = None) -> str:
         """Generate a summary of the content with optional project context"""
@@ -74,18 +144,8 @@ class AIAnalyzer:
 
 Summary:"""
         
-        try:
-            if self.openai_client:
-                return self._openai_completion(prompt, max_tokens=60)
-            elif self.replicate_client:
-                return self._replicate_completion(prompt, max_tokens=60)
-            elif self.anthropic_client:
-                return self._anthropic_completion(prompt, max_tokens=60)
-            else:
-                return self._fallback_summary(content, max_length)
-        except Exception as e:
-            self.logger.error(f"AI summarization failed: {e}")
-            return self._fallback_summary(content, max_length)
+        result = self._try_providers_with_fallback("completion", prompt, max_tokens=60)
+        return result or "Unable to generate summary - no AI providers available"
     
     def analyze_content(self, content: str, filename: str, project_context: str = None, subfolder_path: str = None) -> str:
         """Analyze content and provide insights with project context"""
@@ -115,106 +175,8 @@ Content:
 
 Analysis:"""
         
-        try:
-            if self.openai_client:
-                return self._openai_completion(prompt, max_tokens=150)
-            elif self.replicate_client:
-                return self._replicate_completion(prompt, max_tokens=150)
-            elif self.anthropic_client:
-                return self._anthropic_completion(prompt, max_tokens=150)
-            else:
-                return self._fallback_analysis(content, filename)
-        except Exception as e:
-            self.logger.error(f"AI analysis failed: {e}")
-            return self._fallback_analysis(content, filename)
-    
-    def _openai_completion(self, prompt: str, max_tokens: int = 150) -> str:
-        """Get completion from OpenAI"""
-        try:
-            response = self.openai_client.chat.completions.create(
-                model="gpt-3.5-turbo",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=max_tokens,
-                temperature=0.3
-            )
-            return response.choices[0].message.content.strip()
-        except Exception as e:
-            self.logger.error(f"OpenAI API error: {e}")
-            raise
-    
-    def _anthropic_completion(self, prompt: str, max_tokens: int = 150) -> str:
-        """Get completion from Anthropic"""
-        try:
-            response = self.anthropic_client.messages.create(
-                model="claude-3-haiku-20240307",
-                max_tokens=max_tokens,
-                messages=[{"role": "user", "content": prompt}]
-            )
-            return response.content[0].text.strip()
-        except Exception as e:
-            self.logger.error(f"Anthropic API error: {e}")
-            raise
-    
-    def _replicate_completion(self, prompt: str, max_tokens: int = 150) -> str:
-        """Get completion from Replicate"""
-        try:
-            # Using Meta's Llama 2 7B Chat model
-            output = self.replicate_client.run(
-                "meta/llama-2-7b-chat",
-                input={
-                    "prompt": prompt,
-                    "max_new_tokens": max_tokens,
-                    "temperature": 0.3,
-                    "top_p": 0.9,
-                    "repetition_penalty": 1.1
-                }
-            )
-            
-            # Replicate returns an iterator, join the output
-            result = "".join(output).strip()
-            
-            # Clean up the result - remove the original prompt if it's echoed back
-            if result.startswith(prompt):
-                result = result[len(prompt):].strip()
-            
-            return result if result else "No response generated"
-            
-        except Exception as e:
-            self.logger.error(f"Replicate API error: {e}")
-            raise
-    
-    def _gemini_completion(self, prompt: str, max_tokens: int = 150) -> str:
-        """Get completion from Google Gemini (legacy method - kept for compatibility)"""
-        try:
-            # Configure generation settings
-            generation_config = {
-                'max_output_tokens': max_tokens,
-                'temperature': 0.3,
-            }
-            
-            response = self.gemini_client.generate_content(
-                prompt,
-                generation_config=generation_config
-            )
-            
-            if response.text:
-                return response.text.strip()
-            else:
-                raise Exception("Empty response from Gemini")
-                
-        except Exception as e:
-            self.logger.error(f"Gemini API error: {e}")
-            raise
-    
-    def _fallback_summary(self, content: str, max_length: int) -> str:
-        """Fallback summary when AI is not available"""
-        sentences = content.replace('\n', ' ').split('. ')
-        if len(sentences) > 0:
-            summary = sentences[0]
-            if len(summary) > max_length:
-                summary = summary[:max_length-3] + "..."
-            return summary
-        return "No AI available for summarization"
+        result = self._try_providers_with_fallback("completion", prompt, max_tokens=150)
+        return result or self._fallback_analysis(content, filename)
     
     def analyze_project(self, project_name: str, project_files: list, project_stats: dict) -> str:
         """Generate analysis for a complete project"""
@@ -243,18 +205,8 @@ Based on the project structure and file types, provide:
 
 Analysis:"""
         
-        try:
-            if self.openai_client:
-                return self._openai_completion(prompt, max_tokens=200)
-            elif self.replicate_client:
-                return self._replicate_completion(prompt, max_tokens=200)
-            elif self.anthropic_client:
-                return self._anthropic_completion(prompt, max_tokens=200)
-            else:
-                return f"Project '{project_name}' contains {file_count} files across {len(subfolders)} sections. Requires AI for detailed analysis."
-        except Exception as e:
-            self.logger.error(f"Project analysis failed: {e}")
-            return f"Project '{project_name}' analysis unavailable due to error: {str(e)}"
+        result = self._try_providers_with_fallback("completion", prompt, max_tokens=200)
+        return result or f"Project '{project_name}' analysis unavailable - no AI providers available"
     
     def analyze_cross_project(self, projects_data: dict) -> str:
         """Generate cross-project analysis comparing all projects"""
@@ -293,19 +245,92 @@ Provide insights on:
 
 Cross-Project Analysis:"""
         
+        result = self._try_providers_with_fallback("completion", prompt, max_tokens=250)
+        return result or f"Cross-project analysis of {len(projects_data)} projects with {total_files} total files. Requires AI for detailed insights."
+    
+    # Provider-specific completion methods
+    def _openai_completion(self, prompt: str, max_tokens: int = 150) -> str:
+        """Get completion from OpenAI"""
         try:
-            if self.openai_client:
-                return self._openai_completion(prompt, max_tokens=250)
-            elif self.replicate_client:
-                return self._replicate_completion(prompt, max_tokens=250)
-            elif self.anthropic_client:
-                return self._anthropic_completion(prompt, max_tokens=250)
-            else:
-                return f"Cross-project analysis of {len(projects_data)} projects with {total_files} total files. Requires AI for detailed insights."
+            config = self.config.get_provider_config("openai")
+            response = self.clients["openai"].chat.completions.create(
+                model=config.get("model", "gpt-3.5-turbo"),
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=min(max_tokens, config.get("max_tokens", 1000)),
+                temperature=config.get("temperature", 0.3)
+            )
+            return response.choices[0].message.content.strip()
         except Exception as e:
-            self.logger.error(f"Cross-project analysis failed: {e}")
-            return f"Cross-project analysis unavailable due to error: {str(e)}"
-
+            self.logger.error(f"OpenAI completion failed: {e}")
+            raise
+    
+    def _anthropic_completion(self, prompt: str, max_tokens: int = 150) -> str:
+        """Get completion from Anthropic"""
+        try:
+            config = self.config.get_provider_config("anthropic")
+            response = self.clients["anthropic"].messages.create(
+                model=config.get("model", "claude-3-haiku-20240307"),
+                max_tokens=min(max_tokens, config.get("max_tokens", 1000)),
+                temperature=config.get("temperature", 0.3),
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return response.content[0].text.strip()
+        except Exception as e:
+            self.logger.error(f"Anthropic completion failed: {e}")
+            raise
+    
+    def _replicate_completion(self, prompt: str, max_tokens: int = 150) -> str:
+        """Get completion from Replicate"""
+        try:
+            config = self.config.get_provider_config("replicate")
+            
+            output = self.clients["replicate"].run(
+                config.get("model", "meta/llama-2-7b-chat"),
+                input={
+                    "prompt": prompt,
+                    "max_new_tokens": min(max_tokens, config.get("max_tokens", 1000)),
+                    "temperature": config.get("temperature", 0.3),
+                    "top_p": config.get("top_p", 0.9),
+                    "repetition_penalty": config.get("repetition_penalty", 1.1)
+                }
+            )
+            
+            # Replicate returns a generator, collect the output
+            result = ""
+            for item in output:
+                result += item
+            
+            return result.strip()
+        except Exception as e:
+            self.logger.error(f"Replicate completion failed: {e}")
+            raise
+    
+    def _gemini_completion(self, prompt: str, max_tokens: int = 150) -> str:
+        """Get completion from Google Gemini"""
+        try:
+            config = self.config.get_provider_config("gemini")
+            model = self.clients["gemini"].GenerativeModel(config.get("model", "gemini-pro"))
+            
+            generation_config = self.clients["gemini"].types.GenerationConfig(
+                max_output_tokens=min(max_tokens, config.get("max_tokens", 1000)),
+                temperature=config.get("temperature", 0.3)
+            )
+            
+            response = model.generate_content(prompt, generation_config=generation_config)
+            return response.text.strip()
+        except Exception as e:
+            self.logger.error(f"Gemini completion failed: {e}")
+            raise
+    
+    def _fallback_summary(self, content: str, max_length: int) -> str:
+        """Fallback summary when AI is not available"""
+        # Simple text truncation
+        sentences = content.split('. ')
+        summary = sentences[0] if sentences else content
+        if len(summary) > max_length:
+            summary = summary[:max_length-3] + "..."
+        return summary or "Content summary unavailable"
+    
     def _fallback_analysis(self, content: str, filename: str) -> str:
         """Fallback analysis when AI is not available"""
         word_count = len(content.split())
@@ -328,6 +353,11 @@ Cross-Project Analysis:"""
     
     def is_available(self) -> bool:
         """Check if AI analysis is available"""
-        return (self.openai_client is not None or 
-                self.anthropic_client is not None or 
-                self.replicate_client is not None)
+        return len(self.clients) > 0
+    
+    def get_active_provider(self) -> Optional[str]:
+        """Get the currently active provider"""
+        default_provider = self.config.get_default_provider()
+        if default_provider in self.clients:
+            return default_provider
+        return next(iter(self.clients.keys())) if self.clients else None

@@ -156,7 +156,7 @@ class DocumentAnalyzer:
                         sys.path.append(os.path.dirname(os.path.dirname(__file__)))
                         from utils.ai_analyzer import AIAnalyzer
                     
-                    ai_analyzer = AIAnalyzer()
+                    ai_analyzer = AIAnalyzer()  # Uses default ai_config.yaml
                     result.summary = ai_analyzer.summarize_content(
                         content, 
                         project_context=file_info.project_name

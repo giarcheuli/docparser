@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-DocParser - Enhanced Command Line Interface
+DocGuru - Enhanced Command Line Interface
 A comprehensive document analysis tool for macOS
 
 Features:
@@ -20,6 +20,14 @@ from typing import List, Optional
 import time
 from datetime import datetime
 
+# Load environment variables from .env file
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    # dotenv not available, continue without loading
+    pass
+
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 
@@ -31,7 +39,7 @@ def setup_logging(verbose: bool = False) -> logging.Logger:
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         handlers=[
             logging.StreamHandler(),
-            logging.FileHandler('docparser.log')
+            logging.FileHandler('docguru.log')
         ]
     )
     return logging.getLogger(__name__)
@@ -39,7 +47,7 @@ def setup_logging(verbose: bool = False) -> logging.Logger:
 def print_banner():
     """Print application banner"""
     print("=" * 60)
-    print("📄 DocParser v2.0 - CLI Edition")
+    print("📄 DocGuru v2.0 - CLI Edition")
     print("🔍 Comprehensive Document Analysis Tool")
     print("=" * 60)
 
@@ -209,7 +217,7 @@ def format_bytes(bytes_size: int) -> str:
 def main():
     """Main CLI function"""
     parser = argparse.ArgumentParser(
-        description='DocParser v2.0 - Project-Aware Document Analysis Tool',
+        description='DocGuru v2.0 - Project-Aware Document Analysis Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

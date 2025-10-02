@@ -150,6 +150,14 @@ class DocumentScanner:
                     
                 return project_name, relative_path, subfolder_path
             
+            elif len(path_parts) == 1:
+                # File is directly in root directory - treat root as single project
+                project_name = self.root_directory.name
+                relative_path = str(rel_path)
+                subfolder_path = ""
+                
+                return project_name, relative_path, subfolder_path
+                
         except ValueError:
             # File is not under root directory
             pass

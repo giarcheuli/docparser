@@ -1,5 +1,6 @@
 # Core document processing libraries
 python-docx>=0.8.11
+docx2txt>=0.8  # For .doc file support
 PyPDF2>=3.0.1
 beautifulsoup4>=4.11.1
 lxml>=4.9.1
@@ -21,3 +22,4 @@ jinja2>=3.1.2
 
 # Configuration and logging
 pyyaml>=6.0
+python-dotenv>=1.0.0

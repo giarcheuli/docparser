@@ -1,8 +1,6 @@
-# DocParser v2.0 - Usage Guide# DocParser v2.0 - Usage Guide
+# DocGuru v2.0 - Usage Guide
 
-
-
-## Project-Aware Document Analysis Tool## Project-Aware Document Analysis Tool
+## Project-Aware Document Analysis Tool
 
 
 

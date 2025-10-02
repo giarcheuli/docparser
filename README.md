@@ -1,4 +1,4 @@
-# DocParser v2.0 - Project-Aware Document Analysis Tool
+# DocGuru v2.0 - Project-Aware Document Analysis Tool
 
 A comprehensive command-line document analysis tool for macOS that provides **project-aware analysis** of directories containing various document formats and generates structured markdown reports with AI-powered insights.
 
@@ -36,8 +36,8 @@ A comprehensive command-line document analysis tool for macOS that provides **pr
 
 ```bash
 # Clone the repository
-git clone https://github.com/giarcheuli/docparser.git
-cd docparser
+git clone https://github.com/giarcheuli/docguru.git
+cd docguru
 
 # Install dependencies
 pip3 install -r requirements.txt
@@ -46,29 +46,29 @@ pip3 install -r requirements.txt
 export REPLICATE_API_TOKEN="your-replicate-api-key"
 
 # Run analysis
-python3 docparser.py /path/to/documents --ai
+python3 docguru.py /path/to/documents --ai
 ```
 
 ### Basic Usage
 
 ```bash
 # Analyze a directory with project detection
-python3 docparser.py documents/
+python3 docguru.py documents/
 
 # With AI-powered insights
-python3 docparser.py documents/ --ai
+python3 docguru.py documents/ --ai
 
 # Verbose output for debugging
-python3 docparser.py documents/ --verbose
+python3 docguru.py documents/ --verbose
 
 # Just list supported files
-python3 docparser.py documents/ --list-only
+python3 docguru.py documents/ --list-only
 ```
 
 ## 📋 Project Structure & Specifications
 
 ### **Project Detection Logic**
-DocParser v2.0 uses **level-2 directory detection** for project identification:
+DocGuru v2.0 uses **level-2 directory detection** for project identification:
 
 ```
 Documents/
@@ -107,14 +107,14 @@ Reports/
 ### Quick Setup
 ```bash
 # Clone repository
-git clone https://github.com/giarcheuli/docparser.git
-cd docparser
+git clone https://github.com/giarcheuli/docguru.git
+cd docguru
 
 # Install dependencies
 pip3 install -r requirements.txt
 
 # Test installation
-python3 docparser.py --help
+python3 docguru.py --help
 ```
 
 ### AI Integration Setup
@@ -125,43 +125,43 @@ To enable AI-powered analysis with Replicate:
 export REPLICATE_API_TOKEN="your-replicate-api-key"
 
 # Verify setup
-python3 docparser.py documents/ --ai --verbose
+python3 docguru.py documents/ --ai --verbose
 ```
 
-**Note**: DocParser v2.0 uses Replicate's Meta Llama-2-7b-chat model for AI analysis.
+**Note**: DocGuru v2.0 uses Replicate's Meta Llama-2-7b-chat model for AI analysis.
 
 ## 📖 Usage Examples
 
 ### Basic Project Analysis
 ```bash
 # Analyze directory with project detection
-python3 docparser.py ~/Documents/Projects
+python3 docguru.py ~/Documents/Projects
 
 # Generate all 4 report types
-python3 docparser.py ~/Technical_Documentation --ai
+python3 docguru.py ~/Technical_Documentation --ai
 
 # Verbose output for troubleshooting
-python3 docparser.py ~/Documents --verbose
+python3 docguru.py ~/Documents --verbose
 ```
 
 ### Real-World Examples
 ```bash
 # Analyze Confluence export with AI insights
-python3 docparser.py ~/Confluence_Export --ai
+python3 docguru.py ~/Confluence_Export --ai
 
 # Quick project overview without AI
-python3 docparser.py ~/Client_Projects --no-summary
+python3 docguru.py ~/Client_Projects --no-summary
 
 # List files in complex directory structure
-python3 docparser.py ~/Multi_Project_Folder --list-only
+python3 docguru.py ~/Multi_Project_Folder --list-only
 ```
 
 ### Command Line Options
 ```
-usage: docparser.py [-h] [--ai] [--verbose] [--analysis-mode {qualitative,quantitative}] 
+usage: docguru.py [-h] [--ai] [--verbose] [--analysis-mode {qualitative,quantitative}] 
                     [--no-summary] [--list-only] directory
 
-DocParser v2.0 - Project-Aware Document Analysis Tool
+DocGuru v2.0 - Project-Aware Document Analysis Tool
 
 positional arguments:
   directory             Directory to analyze (required)
@@ -175,9 +175,9 @@ optional arguments:
   --list-only           Only list supported files, don't analyze
 
 Examples:
-  docparser.py documents/                     # Project-aware analysis
-  docparser.py documents/ --ai               # With AI insights
-  docparser.py documents/ --verbose          # Verbose logging
+  docguru.py documents/                     # Project-aware analysis
+  docguru.py documents/ --ai               # With AI insights
+  docguru.py documents/ --verbose          # Verbose logging
 ```
 
 ### Supported File Types
@@ -226,7 +226,7 @@ Generated reports include:
 
 ### Logging
 
-The application automatically generates logs in `docparser.log` with:
+The application automatically generates logs in `docguru.log` with:
 - Project detection and analysis progress
 - AI API interactions and responses  
 - Error details and troubleshooting information
@@ -235,8 +235,8 @@ The application automatically generates logs in `docparser.log` with:
 ## 🏗️ Architecture
 
 ```
-docparser/
-├── docparser.py                   # Main CLI application entry point
+docguru/
+├── docguru.py                   # Main CLI application entry point
 ├── requirements.txt               # Python dependencies
 ├── README.md                      # Project documentation
 ├── .gitignore                     # Git ignore patterns
@@ -262,7 +262,7 @@ docparser/
 
 ## 🚀 Performance
 
-DocParser v2.0 is optimized for project-aware analysis with:
+DocGuru v2.0 is optimized for project-aware analysis with:
 - **Efficient Project Detection**: Fast hierarchy scanning and project identification
 - **Memory Management**: Streaming content processing for large files
 - **Concurrent Processing**: Parallel AI analysis where possible
@@ -304,7 +304,7 @@ DocParser v2.0 is optimized for project-aware analysis with:
    echo $REPLICATE_API_TOKEN
    
    # Test with verbose logging
-   python3 docparser.py documents/ --ai --verbose
+   python3 docguru.py documents/ --ai --verbose
    ```
 
 3. **"No module named" errors**
@@ -324,12 +324,12 @@ DocParser v2.0 is optimized for project-aware analysis with:
 
 Enable comprehensive logging:
 ```bash
-python3 docparser.py /path/to/docs --verbose
+python3 docguru.py /path/to/docs --verbose
 ```
 
 Check session logs:
 ```bash
-tail -f docparser.log
+tail -f docguru.log
 ```
 
 ## 🛠️ Development
@@ -348,7 +348,7 @@ pip3 install -r requirements.txt
 python3 tests/test_basic.py
 
 # Test with real data (need to create test directory)
-mkdir test_data && python3 docparser.py test_data/ --verbose
+mkdir test_data && python3 docguru.py test_data/ --verbose
 ```
 
 ### Adding New File Types
@@ -414,8 +414,8 @@ For issues, questions, or contributions:
 - [ ] **Workflow Analysis**: Document process understanding
 - [ ] **Sentiment Analysis**: Document tone and sentiment
 
-**See [ROADMAP.md](ROADMAP.md) for detailed feature specifications and implementation plans.**
+**See [ROADMAP.md](docs/ROADMAP.md) for detailed feature specifications and implementation plans.**
 
 ---
 
-**DocParser v2.0** - Built with ❤️ for intelligent, project-aware document analysis
+**DocGuru v2.0** - Built with ❤️ for intelligent, project-aware document analysis

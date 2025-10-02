@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocParser AI Configuration Test</title>
+</head>
+<body>
+    <header>
+        <h1>DocParser v2.1 AI Configuration Testing</h1>
+        <p>Comprehensive testing of configurable AI integration</p>
+    </header>
+
+    <main>
+        <section id="overview">
+            <h2>Feature Overview</h2>
+            <p>This HTML document tests the AI configuration system's ability to analyze web content and structured documents.</p>
+            
+            <ul>
+                <li><strong>Multi-Provider Support</strong>: OpenAI, Anthropic, Gemini, Replicate</li>
+                <li><strong>Configurable Parameters</strong>: Model selection, temperature, token limits</li>
+                <li><strong>Fallback Mechanisms</strong>: Graceful degradation when AI unavailable</li>
+                <li><strong>Security</strong>: Environment variable based credential management</li>
+            </ul>
+        </section>
+
+        <section id="configuration">
+            <h2>Configuration Management</h2>
+            <p>The new system uses YAML configuration files with the following structure:</p>
+            
+            <pre><code>
+ai_providers:
+  default: "replicate"
+  
+  replicate:
+    enabled: true
+    api_token: "${REPLICATE_API_TOKEN}"
+    model: "meta/llama-2-7b-chat"
+    temperature: 0.3
+            </code></pre>
+        </section>
+
+        <section id="testing">
+            <h2>Testing Procedures</h2>
+            <table border="1">
+                <tr>
+                    <th>Test Case</th>
+                    <th>Expected Behavior</th>
+                    <th>Validation Method</th>
+                </tr>
+                <tr>
+                    <td>No providers configured</td>
+                    <td>Fallback to basic analysis</td>
+                    <td>Check for "Document Analysis (Basic)" output</td>
+                </tr>
+                <tr>
+                    <td>Invalid credentials</td>
+                    <td>Try next provider in fallback order</td>
+                    <td>Verify fallback provider used</td>
+                </tr>
+                <tr>
+                    <td>Valid provider available</td>
+                    <td>AI-powered analysis generated</td>
+                    <td>Check for detailed insights and summaries</td>
+                </tr>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>Generated for DocParser v2.1 development and testing.</p>
+        <p>This document contains structured HTML with tables, lists, code blocks, and semantic elements.</p>
+    </footer>
+</body>
+</html>

@@ -2,7 +2,11 @@
 
 ## 🎯 Project Overview
 
-**DocParser v2.0** is a **Project-Aware Document Analysis Tool** designed for intelligent analysis of multi-project directory structures with AI-powered insights.
+# DocGuru v2.0 - Project Specifications
+
+**Document Analysis Tool for macOS with Project-Aware Intelligence**
+
+**DocGuru v2.0** is a **Project-Aware Document Analysis Tool** designed for intelligent analysis of multi-project directory structures with AI-powered insights.
 
 ### Core Mission
 Transform complex document repositories into structured, actionable intelligence through project-aware analysis and AI-enhanced reporting.
@@ -18,7 +22,7 @@ Transform complex document repositories into structured, actionable intelligence
 
 ### **Core Components**
 
-1. **Entry Point**: `docparser.py` - Main CLI application
+1. **Entry Point**: `docguru.py` - Main CLI application
 2. **Core Engine**: 
    - `src/core/scanner.py` - Project-aware directory scanning
    - `src/core/analyzer.py` - Analysis orchestration
@@ -144,7 +148,7 @@ Root_Directory/                    # Level 1
 
 ### **Command Line Interface**
 ```bash
-python3 docparser.py <directory> [options]
+python3 docguru.py <directory> [options]
 ```
 
 ### **Available Options**
@@ -158,7 +162,7 @@ python3 docparser.py <directory> [options]
 
 ### **Environment Variables**
 - `REPLICATE_API_TOKEN`: Required for AI analysis
-- Logging automatically to `docparser.log`
+- Logging automatically to `docguru.log`
 
 ## 🧪 Testing & Quality Assurance
 
@@ -178,8 +182,8 @@ python3 docparser.py <directory> [options]
 
 ### **Code Organization**
 ```
-docparser/
-├── docparser.py                   # CLI entry point
+docguru/
+├── docguru.py                   # CLI entry point
 ├── src/
 │   ├── core/                      # Core logic
 │   ├── analyzers/                 # File processors
@@ -225,7 +229,7 @@ docparser/
 
 ## 🎯 Current Capabilities Summary
 
-**DocParser v2.0** successfully provides:
+**DocGuru v2.0** successfully provides:
 
 1. **Project-Aware Intelligence**: Automatically detects and analyzes projects within directory structures
 2. **AI-Enhanced Insights**: Leverages Meta Llama-2-7b-chat for content analysis and strategic insights
