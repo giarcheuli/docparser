@@ -4,8 +4,15 @@ A comprehensive command-line document analysis tool for macOS that provides **pr
 
 ![Python](https://img.shields.io/badge/python-v3.8+-blue.svg)
 ![Platform](https://img.shields.io/badge/platform-macOS-lightgrey.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![CLI](https://img.shields.io/badge/interface-CLI-orange.svg)
+
+## Portfolio context and first run
+
+**DocGuru** is the product name; **docparser** is the repository name. This personal, AI-assisted project explores document inventories and structured reports. My focus is requirements, documentation, and validation; it is separate from employer deliverables.
+
+The first analysis command below omits `--ai`. Important limitation: report generation currently initializes AI independently of that flag. Run the synthetic walkthrough in an isolated environment without provider credentials or AI SDKs; the flag alone is not a reliable offline guarantee. Provider availability and output quality are not validated by this example. See the [synthetic input/output walkthrough](examples/README.md).
+
+Current scope: a local CLI, not a hosted service. Some feature and performance descriptions below are historical project claims, not fresh benchmarks; verify the workflows you need. The roadmap is proposed work.
 
 ## ✨ Key Features
 
@@ -36,8 +43,8 @@ A comprehensive command-line document analysis tool for macOS that provides **pr
 
 ```bash
 # Clone the repository
-git clone https://github.com/giarcheuli/docguru.git
-cd docguru
+git clone https://github.com/giarcheuli/docparser.git
+cd docparser
 
 # Install dependencies
 pip3 install -r requirements.txt
@@ -46,7 +53,7 @@ pip3 install -r requirements.txt
 export REPLICATE_API_TOKEN="your-replicate-api-key"
 
 # Run analysis
-python3 docguru.py /path/to/documents --ai
+python3 docguru.py /path/to/documents
 ```
 
 ### Basic Usage
@@ -107,8 +114,8 @@ Reports/
 ### Quick Setup
 ```bash
 # Clone repository
-git clone https://github.com/giarcheuli/docguru.git
-cd docguru
+git clone https://github.com/giarcheuli/docparser.git
+cd docparser
 
 # Install dependencies
 pip3 install -r requirements.txt
@@ -260,29 +267,9 @@ docguru/
     └── {session_folders}/        # Timestamped analysis sessions
 ```
 
-## 🚀 Performance
+## Verification limits
 
-DocGuru v2.0 is optimized for project-aware analysis with:
-- **Efficient Project Detection**: Fast hierarchy scanning and project identification
-- **Memory Management**: Streaming content processing for large files
-- **Concurrent Processing**: Parallel AI analysis where possible
-- **Error Resilience**: Graceful handling of corrupted or inaccessible files
-
-### Typical Performance
-
-| Directory Size | File Count | Processing Time | Notes |
-|----------------|------------|-----------------|--------|
-| **Small Projects** | < 50 files | 10-30 seconds | Without AI analysis |
-| **Medium Projects** | 50-200 files | 1-3 minutes | With basic AI analysis |  
-| **Large Projects** | 200+ files | 3-10 minutes | Full AI analysis with all report types |
-
-*Performance varies based on file sizes, complexity, and AI analysis depth*
-
-### AI Analysis Performance
-- **Document Analysis**: ~1-2 seconds per document
-- **Project Analysis**: ~3-5 seconds per project  
-- **Cross-Project Analysis**: ~5-10 seconds for final report
-- **Total AI Overhead**: +2-5 minutes for comprehensive AI insights
+No performance benchmark or AI-provider validation was performed in this portfolio pass. The [synthetic walkthrough](examples/README.md) records a narrow local Markdown run and its limitations. Do not use historical timing estimates as measured results.
 
 ## 🔧 Troubleshooting
 
@@ -301,7 +288,8 @@ DocGuru v2.0 is optimized for project-aware analysis with:
 2. **AI analysis fails**
    ```bash
    # Check API token
-   echo $REPLICATE_API_TOKEN
+   # Check whether the token is set without printing it
+   test -n "$REPLICATE_API_TOKEN" && echo "Token is set"
    
    # Test with verbose logging
    python3 docguru.py documents/ --ai --verbose
@@ -368,7 +356,7 @@ mkdir test_data && python3 docguru.py test_data/ --verbose
 
 ## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+No LICENSE file is currently included. The earlier MIT badge and claim were unsupported by a license file; licensing needs an explicit owner decision.
 
 ## 🤝 Contributing
 
